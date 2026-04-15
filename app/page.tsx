@@ -438,9 +438,9 @@ export default function Home() {
         </div>
       ) : null}
 
-      <header className="pointer-events-none fixed inset-x-0 top-6 z-50 flex justify-center px-3 sm:top-7 md:top-8">
+      <header className="pointer-events-none fixed inset-x-0 top-6 z-50 flex justify-center px-4 sm:top-7 md:top-8">
         <nav
-          className="pointer-events-auto mt-3 flex w-full max-w-md flex-col gap-6 sm:mt-4 sm:max-w-none sm:w-auto sm:flex-row sm:items-stretch sm:justify-center sm:gap-8 md:gap-8"
+          className="pointer-events-auto mt-3 flex w-full max-w-md flex-col gap-5 sm:mt-4 sm:max-w-none sm:w-auto sm:flex-row sm:items-stretch sm:justify-center sm:gap-8 md:gap-8"
           aria-label="Sunum seçimi"
         >
           <Link
@@ -467,11 +467,11 @@ export default function Home() {
         </nav>
       </header>
 
-      <div className="fixed right-3 top-3 z-[100] flex flex-col items-end gap-1.5 sm:right-4 sm:top-4 sm:gap-2 md:right-5 md:top-5">
+      <div className="fixed right-[max(0.75rem,env(safe-area-inset-right))] top-[max(0.75rem,env(safe-area-inset-top))] z-[100] flex flex-col items-end gap-1.5 sm:right-4 sm:top-4 sm:gap-2 md:right-5 md:top-5">
         <button
           type="button"
           onClick={() => void toggleFullscreen()}
-          className="rounded-sm border border-white/[0.12] bg-black/25 px-1.5 py-1 text-[8px] font-normal uppercase tracking-[0.1em] text-white/60 backdrop-blur-[6px] transition-colors duration-200 hover:border-white/20 hover:text-white/78 focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-white/35 sm:px-2 sm:py-1 sm:text-[10px] md:px-2.5 md:py-1.5 md:text-[11px]"
+          className="min-h-[44px] min-w-[3.25rem] max-w-[4.5rem] rounded-sm border border-white/[0.12] bg-black/25 px-1.5 py-2 text-[7px] font-normal uppercase leading-tight tracking-[0.08em] text-white/60 backdrop-blur-[6px] transition-colors duration-200 hover:border-white/20 hover:text-white/78 focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-white/35 sm:min-h-0 sm:min-w-0 sm:max-w-none sm:px-2 sm:py-1 sm:text-[10px] md:px-2.5 md:py-1.5 md:text-[11px]"
           aria-pressed={isFullscreen}
           aria-label={
             isFullscreen ? "Tam ekran sunumundan çık" : "Sunumu tam ekranda göster"
@@ -483,7 +483,7 @@ export default function Home() {
           type="button"
           onClick={() => void handlePdfDownload()}
           disabled={pdfExporting}
-          className="rounded border border-white/20 bg-black/40 px-2 py-1.5 text-[9px] font-normal uppercase tracking-[0.1em] text-white/65 backdrop-blur-sm transition hover:border-white/35 hover:bg-black/55 hover:text-white/82 disabled:cursor-not-allowed disabled:opacity-50 sm:px-2.5 sm:py-1.5 sm:text-[10px] md:px-3 md:py-2 md:text-[11px]"
+          className="min-h-[44px] min-w-[3.25rem] max-w-[4.75rem] rounded border border-white/20 bg-black/40 px-1.5 py-2 text-[8px] font-normal uppercase leading-tight tracking-[0.08em] text-white/65 backdrop-blur-sm transition hover:border-white/35 hover:bg-black/55 hover:text-white/82 disabled:cursor-not-allowed disabled:opacity-50 sm:min-h-0 sm:min-w-0 sm:max-w-none sm:px-2.5 sm:py-1.5 sm:text-[10px] md:px-3 md:py-2 md:text-[11px]"
           aria-busy={pdfExporting}
         >
           {pdfExporting ? "Hazırlanıyor…" : "PDF İndir"}
@@ -491,7 +491,7 @@ export default function Home() {
       </div>
 
       <nav
-        className="pointer-events-auto fixed right-3 top-1/2 z-50 hidden -translate-y-1/2 flex-col gap-y-1.5 sm:flex sm:right-4 sm:gap-y-2 md:right-6 md:gap-y-2.5 lg:right-8 lg:gap-y-3"
+        className="pointer-events-auto fixed right-[max(0.5rem,env(safe-area-inset-right))] top-1/2 z-50 flex -translate-y-1/2 flex-col gap-1 sm:right-4 sm:gap-y-2 md:right-6 md:gap-y-2.5 lg:right-8 lg:gap-y-3"
         aria-label="Slayt gezinmesi"
       >
         {slides.map((_, index) => {
@@ -503,20 +503,24 @@ export default function Home() {
               aria-label={`Slayta git ${index + 1}`}
               aria-current={isActive ? "true" : undefined}
               onClick={() => goToSlide(index)}
-              className={
-                "h-1.5 w-1.5 shrink-0 rounded-full transition-[transform,opacity] duration-200 ease-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/60 sm:h-2 sm:w-2 lg:h-2.5 lg:w-2.5 " +
-                (isActive
-                  ? "scale-125 bg-white opacity-100"
-                  : "scale-100 bg-white opacity-30 hover:opacity-50")
-              }
-            />
+              className="flex h-11 w-10 shrink-0 items-center justify-center rounded-full sm:h-auto sm:w-auto sm:rounded-none sm:p-0"
+            >
+              <span
+                className={
+                  "block rounded-full transition-[transform,opacity] duration-200 ease-out " +
+                  (isActive
+                    ? "h-2 w-5 scale-100 bg-white opacity-100 shadow-[0_0_12px_-2px_rgba(255,255,255,0.35)] sm:h-2 sm:w-2 lg:h-2.5 lg:w-2.5 lg:scale-125"
+                    : "h-1.5 w-1.5 scale-100 bg-white opacity-30 hover:opacity-50 sm:h-2 sm:w-2 lg:h-2.5 lg:w-2.5")
+                }
+              />
+            </button>
           );
         })}
       </nav>
 
       <div
         className={
-          "pointer-events-none fixed bottom-4 left-4 right-4 z-50 flex justify-between text-[9px] font-normal uppercase tracking-[0.1em] text-white/48 sm:bottom-5 sm:left-6 sm:right-6 sm:text-xs md:left-8 md:right-8 md:text-[0.8125rem] lg:left-[30px] lg:right-[30px] lg:text-sm " +
+          "pointer-events-none fixed bottom-[max(1rem,env(safe-area-inset-bottom))] left-[max(1rem,env(safe-area-inset-left))] right-[max(4.25rem,env(safe-area-inset-right)+3.25rem)] z-40 flex justify-between gap-2 text-[9px] font-normal uppercase tracking-[0.1em] text-white/48 sm:bottom-5 sm:left-6 sm:right-6 sm:text-xs md:left-8 md:right-8 md:text-[0.8125rem] lg:left-[30px] lg:right-[30px] lg:text-sm " +
           (activeSlide === slides.length - 1 ? "max-sm:hidden" : "")
         }
         aria-hidden
@@ -537,13 +541,13 @@ export default function Home() {
             }}
             className="relative flex h-screen w-full shrink-0 snap-start flex-col overflow-hidden bg-black"
           >
-            <p className="pointer-events-none absolute left-3 top-[5.25rem] z-30 text-[9px] font-normal uppercase tabular-nums tracking-[0.1em] text-white/52 drop-shadow-md sm:left-8 sm:top-[5.75rem] sm:text-[10px] md:left-10 md:top-28 lg:left-12 lg:top-32 lg:text-xs">
+            <p className="pointer-events-none absolute left-[max(0.75rem,env(safe-area-inset-left))] top-[6.75rem] z-30 text-[9px] font-normal uppercase tabular-nums tracking-[0.1em] text-white/52 drop-shadow-md sm:left-8 sm:top-[5.75rem] sm:text-[10px] md:left-10 md:top-28 lg:left-12 lg:top-32 lg:text-xs">
               {String(index + 1).padStart(2, "0")} /{" "}
               {String(slides.length).padStart(2, "0")}
             </p>
             <div
               className={
-                "flex min-h-0 flex-1 items-center justify-center px-3 pt-[8.5rem] sm:px-5 sm:pt-[8rem] md:px-7 md:pt-32 lg:px-10 lg:pt-36 " +
+                "flex min-h-0 flex-1 items-center justify-center px-4 pt-[9rem] sm:px-5 sm:pt-[8rem] md:px-7 md:pt-32 lg:px-10 lg:pt-36 " +
                 (index === slides.length - 1
                   ? "pb-2 sm:pb-3 md:pb-4 lg:pb-5"
                   : "pb-6 sm:pb-8 md:pb-10 lg:pb-12")
@@ -564,9 +568,9 @@ export default function Home() {
             </div>
 
             {index === slides.length - 1 ? (
-              <div className="pointer-events-auto shrink-0 px-3 pb-5 pt-0.5 sm:px-5 sm:pb-7 sm:pt-1 md:px-6 md:pb-8">
+              <div className="pointer-events-auto shrink-0 px-4 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-1 sm:px-5 sm:pb-7 sm:pt-1 md:px-6 md:pb-8">
                 <div className="mx-auto flex max-w-[1400px] flex-col items-center gap-2.5 text-center sm:gap-3 md:gap-4">
-                  <h2 className="text-sm font-bold uppercase leading-snug tracking-[0.1em] text-white sm:text-base md:text-lg">
+                  <h2 className="text-balance text-sm font-bold uppercase leading-snug tracking-[0.1em] text-white sm:text-base md:text-lg">
                     Ana Sponsor Görüşmeleri Başlamıştır
                   </h2>
                   <p className="max-w-xl px-1 text-xs font-normal leading-relaxed tracking-[0.1em] text-white/58 sm:px-0 sm:text-sm md:text-[0.9375rem]">

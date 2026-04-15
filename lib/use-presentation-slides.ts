@@ -2,21 +2,32 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
+export type PresentationSlidesOptions = {
+  /**
+   * Masaüstü (fine pointer): tekerlek ile tek adım slayt, serbest kaydırmayı engeller.
+   * Dokunmatik / coarse pointer cihazlarda yerel kaydırma + snap korunur.
+   */
+  wheelStepSlides?: boolean;
+};
+
 /**
  * Sunum kaydırma / snap / aktif slayt mantığı (sponsor ana sayfa ile aynı davranış).
  */
 export function usePresentationSlides(
   slideCount: number,
   keyboardEnabled = true,
+  options?: PresentationSlidesOptions,
 ) {
   const [activeSlide, setActiveSlide] = useState(0);
   const slidesRef = useRef<(HTMLElement | null)[]>([]);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const activeSlideRef = useRef(activeSlide);
   const keyboardEnabledRef = useRef(keyboardEnabled);
+  const wheelStepSlidesRef = useRef(!!options?.wheelStepSlides);
 
   activeSlideRef.current = activeSlide;
   keyboardEnabledRef.current = keyboardEnabled;
+  wheelStepSlidesRef.current = !!options?.wheelStepSlides;
 
   useEffect(() => {
     const root = scrollContainerRef.current;
@@ -55,12 +66,61 @@ export function usePresentationSlides(
       const i = Math.max(0, Math.min(slideCount - 1, index));
       setActiveSlide(i);
       slidesRef.current[i]?.scrollIntoView({
-        behavior: "smooth",
+        behavior: wheelStepSlidesRef.current ? "auto" : "smooth",
         block: "start",
       });
     },
     [slideCount],
   );
+
+  const goToSlideRef = useRef(goToSlide);
+  goToSlideRef.current = goToSlide;
+
+  useEffect(() => {
+    if (!options?.wheelStepSlides) return;
+    const root = scrollContainerRef.current;
+    if (!root) return;
+
+    const mq = window.matchMedia("(hover: hover) and (pointer: fine)");
+    let locked = false;
+    let lockTimer: number | undefined;
+
+    const clearLock = () => {
+      locked = false;
+      lockTimer = undefined;
+    };
+
+    const onWheel = (e: WheelEvent) => {
+      if (!mq.matches) return;
+      if (e.deltaY === 0) return;
+
+      const current = activeSlideRef.current;
+
+      if (e.deltaY > 0 && current >= slideCount - 1) {
+        e.preventDefault();
+        return;
+      }
+      if (e.deltaY < 0 && current <= 0) {
+        e.preventDefault();
+        return;
+      }
+
+      e.preventDefault();
+
+      if (locked) return;
+
+      locked = true;
+      lockTimer = window.setTimeout(clearLock, 450);
+
+      goToSlideRef.current(e.deltaY > 0 ? current + 1 : current - 1);
+    };
+
+    root.addEventListener("wheel", onWheel, { passive: false });
+    return () => {
+      root.removeEventListener("wheel", onWheel);
+      if (lockTimer !== undefined) window.clearTimeout(lockTimer);
+    };
+  }, [options?.wheelStepSlides, slideCount]);
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
