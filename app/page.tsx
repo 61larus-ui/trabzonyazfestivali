@@ -3,7 +3,9 @@
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
 import { PRESENTATION_SLIDE_PATHS as slides } from "@/lib/presentation-slides";
+import { usePresentationSlides } from "@/lib/use-presentation-slides";
 import Image from "next/image";
+import Link from "next/link";
 import {
   useCallback,
   useEffect,
@@ -227,24 +229,20 @@ function AnimatedSlideFrame({
 }
 
 export default function Home() {
-  const [activeSlide, setActiveSlide] = useState(0);
   const [pageIntroDone, setPageIntroDone] = useState(false);
   const [pdfExporting, setPdfExporting] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [splashStage, setSplashStage] = useState<SplashStage>("enter");
   const [splashTextIn, setSplashTextIn] = useState(false);
   const [whatsappMenuOpen, setWhatsappMenuOpen] = useState(false);
+  const { activeSlide, slidesRef, scrollContainerRef, goToSlide } =
+    usePresentationSlides(slides.length, splashStage === "off");
   const pdfExportLockRef = useRef(false);
   const presentationRootRef = useRef<HTMLDivElement>(null);
-  const slidesRef = useRef<(HTMLElement | null)[]>([]);
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const pdfExportRootRef = useRef<HTMLDivElement>(null);
   const pdfPageRefs = useRef<(HTMLDivElement | null)[]>([]);
   const whatsappContactTriggerRef = useRef<HTMLButtonElement>(null);
   const whatsappMenuPanelRef = useRef<HTMLDivElement>(null);
-  const activeSlideRef = useRef(activeSlide);
-
-  activeSlideRef.current = activeSlide;
 
   useLayoutEffect(() => {
     let raf2 = 0;
@@ -367,47 +365,6 @@ export default function Home() {
     }
   }, []);
 
-  useEffect(() => {
-    const root = scrollContainerRef.current;
-    if (!root) return;
-
-    const ratios = Array.from({ length: slides.length }, () => 0);
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          const idx = slidesRef.current.indexOf(entry.target as HTMLElement);
-          if (idx >= 0) {
-            ratios[idx] = entry.intersectionRatio;
-          }
-        }
-        let best = 0;
-        for (let i = 1; i < slides.length; i++) {
-          if (ratios[i] > ratios[best]) best = i;
-        }
-        if (ratios[best] >= 0.6) {
-          setActiveSlide(best);
-        }
-      },
-      { root, threshold: [0, 0.25, 0.5, 0.6, 0.75, 1] },
-    );
-
-    slidesRef.current.forEach((el) => {
-      if (el) observer.observe(el);
-    });
-
-    return () => observer.disconnect();
-  }, []);
-
-  const goToSlide = useCallback((index: number) => {
-    const i = Math.max(0, Math.min(slides.length - 1, index));
-    setActiveSlide(i);
-    slidesRef.current[i]?.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    });
-  }, []);
-
   const syncFullscreenState = useCallback(() => {
     const el = presentationRootRef.current;
     const fs = getFullscreenElement();
@@ -443,50 +400,6 @@ export default function Home() {
       /* kullanıcı veya tarayıcı reddedebilir */
     }
   }, []);
-
-  useEffect(() => {
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (splashStage !== "off") return;
-
-      const t = e.target;
-      if (
-        t instanceof HTMLInputElement ||
-        t instanceof HTMLTextAreaElement ||
-        t instanceof HTMLSelectElement ||
-        (t instanceof HTMLElement && t.isContentEditable)
-      ) {
-        return;
-      }
-
-      const current = activeSlideRef.current;
-
-      switch (e.key) {
-        case "ArrowDown":
-        case "PageDown":
-          e.preventDefault();
-          goToSlide(current + 1);
-          break;
-        case "ArrowUp":
-        case "PageUp":
-          e.preventDefault();
-          goToSlide(current - 1);
-          break;
-        case "Home":
-          e.preventDefault();
-          goToSlide(0);
-          break;
-        case "End":
-          e.preventDefault();
-          goToSlide(slides.length - 1);
-          break;
-        default:
-          break;
-      }
-    };
-
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [goToSlide, splashStage]);
 
   return (
     <div
@@ -525,28 +438,47 @@ export default function Home() {
         </div>
       ) : null}
 
-      <header className="pointer-events-none fixed left-1/2 top-4 z-50 flex max-w-[calc(100vw-5.5rem)] -translate-x-1/2 flex-col items-center gap-0.5 px-2 sm:top-6 sm:max-w-[calc(100vw-8rem)] sm:gap-1 md:max-w-none md:px-0 lg:top-7">
-        <h1 className="text-center text-base font-bold uppercase tracking-[0.1em] text-white sm:text-lg md:text-xl">
-          TRABZON YAZ FEST 2026
-        </h1>
-        <p className="text-center text-xs font-normal tracking-[0.1em] text-white/58 sm:text-sm md:text-[0.9375rem]">
-          Karadeniz’in En Büyük Yaz Deneyimi
-        </p>
+      <header className="pointer-events-none fixed inset-x-0 top-6 z-50 flex justify-center px-3 sm:top-7 md:top-8">
+        <nav
+          className="pointer-events-auto mt-3 flex w-full max-w-md flex-col gap-6 sm:mt-4 sm:max-w-none sm:w-auto sm:flex-row sm:items-stretch sm:justify-center sm:gap-8 md:gap-8"
+          aria-label="Sunum seçimi"
+        >
+          <Link
+            href="/"
+            aria-current="page"
+            onClick={(e) => {
+              e.preventDefault();
+              goToSlide(0);
+              scrollContainerRef.current?.scrollTo({
+                top: 0,
+                behavior: "smooth",
+              });
+            }}
+            className="min-h-[48px] flex-1 rounded-xl border border-white/50 bg-gradient-to-b from-white/28 via-white/20 to-white/14 px-8 py-4 text-center text-xs font-semibold uppercase tracking-[0.12em] text-white shadow-[0_0_0_1px_rgba(255,255,255,0.22),0_10px_40px_-14px_rgba(255,255,255,0.28),0_24px_56px_-28px_rgba(0,0,0,0.92)] ring-1 ring-white/25 backdrop-blur-md transition duration-200 ease-out hover:scale-105 hover:border-white/58 hover:shadow-[0_0_0_1px_rgba(255,255,255,0.32),0_14px_48px_-12px_rgba(255,255,255,0.38),0_28px_64px_-24px_rgba(0,0,0,0.88)] hover:ring-white/35 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/45 sm:min-h-0 sm:flex-initial sm:min-w-[12.5rem] sm:px-9 sm:py-4 md:min-w-[13.5rem] md:px-10 md:py-5 md:text-sm"
+          >
+            Sponsor Sunumu
+          </Link>
+          <Link
+            href="/ziyaretci-sunumu"
+            className="min-h-[48px] flex-1 rounded-xl border-2 border-white/26 bg-transparent px-8 py-4 text-center text-xs font-semibold uppercase tracking-[0.12em] text-white/72 shadow-[0_2px_16px_-8px_rgba(0,0,0,0.6)] backdrop-blur-sm transition duration-200 ease-out hover:scale-105 hover:border-white/42 hover:bg-white/[0.06] hover:text-white/92 hover:shadow-[0_0_28px_-10px_rgba(255,255,255,0.18),0_8px_32px_-20px_rgba(0,0,0,0.75)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/35 sm:min-h-0 sm:flex-initial sm:min-w-[12.5rem] sm:px-9 sm:py-4 md:min-w-[13.5rem] md:px-10 md:py-5 md:text-sm"
+          >
+            Ziyaretçi Sunumu
+          </Link>
+        </nav>
       </header>
 
-      <button
-        type="button"
-        onClick={() => void toggleFullscreen()}
-        className="fixed right-3 top-3 z-[100] rounded-sm border border-white/[0.12] bg-black/25 px-1.5 py-1 text-[9px] font-normal uppercase tracking-[0.1em] text-white/60 backdrop-blur-[6px] transition-colors duration-200 hover:border-white/20 hover:text-white/78 focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-white/35 sm:right-4 sm:top-4 sm:px-2 sm:py-1 sm:text-[10px] md:right-5 md:top-5 md:px-2.5 md:py-1.5 md:text-[11px]"
-        aria-pressed={isFullscreen}
-        aria-label={
-          isFullscreen ? "Tam ekran sunumundan çık" : "Sunumu tam ekranda göster"
-        }
-      >
-        Tam Ekran
-      </button>
-
-      <div className="fixed right-3 top-[2.65rem] z-[55] flex flex-col items-end gap-1.5 sm:right-4 sm:top-[3.15rem] sm:gap-2 md:right-5 md:top-[3.75rem]">
+      <div className="fixed right-3 top-3 z-[100] flex flex-col items-end gap-1.5 sm:right-4 sm:top-4 sm:gap-2 md:right-5 md:top-5">
+        <button
+          type="button"
+          onClick={() => void toggleFullscreen()}
+          className="rounded-sm border border-white/[0.12] bg-black/25 px-1.5 py-1 text-[8px] font-normal uppercase tracking-[0.1em] text-white/60 backdrop-blur-[6px] transition-colors duration-200 hover:border-white/20 hover:text-white/78 focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-white/35 sm:px-2 sm:py-1 sm:text-[10px] md:px-2.5 md:py-1.5 md:text-[11px]"
+          aria-pressed={isFullscreen}
+          aria-label={
+            isFullscreen ? "Tam ekran sunumundan çık" : "Sunumu tam ekranda göster"
+          }
+        >
+          Tam Ekran
+        </button>
         <button
           type="button"
           onClick={() => void handlePdfDownload()}
@@ -605,13 +537,13 @@ export default function Home() {
             }}
             className="relative flex h-screen w-full shrink-0 snap-start flex-col overflow-hidden bg-black"
           >
-            <p className="pointer-events-none absolute left-3 top-[3.25rem] z-30 text-[9px] font-normal uppercase tabular-nums tracking-[0.1em] text-white/52 drop-shadow-md sm:left-8 sm:top-8 sm:text-[10px] md:left-10 lg:left-12 lg:top-10 lg:text-xs">
+            <p className="pointer-events-none absolute left-3 top-[5.25rem] z-30 text-[9px] font-normal uppercase tabular-nums tracking-[0.1em] text-white/52 drop-shadow-md sm:left-8 sm:top-[5.75rem] sm:text-[10px] md:left-10 md:top-28 lg:left-12 lg:top-32 lg:text-xs">
               {String(index + 1).padStart(2, "0")} /{" "}
               {String(slides.length).padStart(2, "0")}
             </p>
             <div
               className={
-                "flex min-h-0 flex-1 items-center justify-center px-3 pt-[4.25rem] sm:px-5 sm:pt-[4.75rem] md:px-7 md:pt-24 lg:px-10 lg:pt-28 " +
+                "flex min-h-0 flex-1 items-center justify-center px-3 pt-[8.5rem] sm:px-5 sm:pt-[8rem] md:px-7 md:pt-32 lg:px-10 lg:pt-36 " +
                 (index === slides.length - 1
                   ? "pb-2 sm:pb-3 md:pb-4 lg:pb-5"
                   : "pb-6 sm:pb-8 md:pb-10 lg:pb-12")
