@@ -144,10 +144,13 @@ const VISITOR_SLIDE_FOCUS =
   "transition-opacity duration-[360ms] ease-[cubic-bezier(0.33,1,0.68,1)] motion-reduce:transition-none";
 
 const VISITOR_LIST_CLASS =
-  "mt-0 list-none space-y-3 text-left text-sm leading-relaxed text-white/80 sm:space-y-3.5 sm:text-[0.9375rem]";
+  "mt-0 list-none space-y-3 text-left text-sm leading-relaxed text-white/80 max-md:space-y-2 max-md:text-[0.8125rem] max-md:leading-snug sm:space-y-3.5 sm:text-[0.9375rem]";
 
 const VISITOR_PANEL_BASE =
-  "w-full max-w-md rounded-xl border px-5 py-5 shadow-[0_18px_48px_-16px_rgba(0,0,0,0.65)] sm:px-6 sm:py-6 md:max-w-[26rem] max-md:max-h-[min(48vh,20rem)] max-md:overflow-y-auto max-md:overscroll-y-contain max-md:pb-[max(1.25rem,env(safe-area-inset-bottom))]";
+  "visitor-panel-scroll touch-pan-y w-full max-w-md min-h-0 rounded-xl border px-5 py-5 shadow-[0_18px_48px_-16px_rgba(0,0,0,0.65)] max-md:max-h-[min(66svh,34rem)] max-md:overflow-y-auto max-md:overscroll-y-contain max-md:px-4 max-md:pt-6 max-md:pb-8 sm:px-6 sm:py-6 md:max-w-[26rem] md:max-h-none md:overflow-visible";
+
+const VISITOR_SLIDE_FRAME =
+  "relative w-full overflow-hidden rounded-lg sm:rounded-xl aspect-[16/10] min-h-[17rem] max-md:aspect-auto max-md:min-h-[min(78svh,40rem)] sm:min-h-[20rem] md:aspect-auto md:min-h-[min(72svh,44rem)]";
 
 export default function ZiyaretciSunumuPage() {
   const { activeSlide, slidesRef, scrollContainerRef, goToSlide } =
@@ -299,7 +302,7 @@ export default function ZiyaretciSunumuPage() {
           ref={(el) => {
             slidesRef.current[1] = el;
           }}
-          className={`relative flex h-screen w-full shrink-0 snap-start flex-col overflow-hidden border-t border-white/[0.06] bg-black ${VISITOR_SLIDE_FOCUS} ${slideFocusOpacity(1)}`}
+          className={`relative flex h-screen min-h-[100svh] w-full shrink-0 snap-start flex-col overflow-hidden max-md:overflow-visible border-t border-white/[0.06] bg-black ${VISITOR_SLIDE_FOCUS} ${slideFocusOpacity(1)}`}
           aria-labelledby="sahne-deneyimi-title"
         >
           <p className="pointer-events-none absolute left-[max(0.75rem,env(safe-area-inset-left))] top-[6.75rem] z-30 text-[9px] font-normal uppercase tabular-nums tracking-[0.1em] text-white/52 drop-shadow-md sm:left-8 sm:top-[5.75rem] sm:text-[10px] md:left-10 md:top-28 lg:left-12 lg:top-32 lg:text-xs">
@@ -310,7 +313,7 @@ export default function ZiyaretciSunumuPage() {
           <div className="flex min-h-0 flex-1 flex-col items-center justify-center px-4 pb-10 pt-7 sm:px-6 sm:pb-12 sm:pt-9 md:px-8 lg:px-12">
             <div className={`${SPONSOR_FRAME_OUTER} w-full`}>
               <div className="p-2 sm:p-4 md:p-5 lg:p-7">
-                <div className="relative aspect-[16/10] min-h-[17rem] w-full overflow-hidden rounded-lg sm:min-h-[20rem] sm:rounded-xl md:aspect-auto md:min-h-[min(72svh,44rem)]">
+                <div className={VISITOR_SLIDE_FRAME}>
                   <VisitorParallaxVisual active={activeSlide === 1}>
                     <Image
                       src="/images/stage-experience.jpg"
@@ -324,10 +327,10 @@ export default function ZiyaretciSunumuPage() {
                     className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/22 via-transparent to-black/14 sm:bg-gradient-to-r sm:from-black/36 sm:via-black/10 sm:to-transparent"
                     aria-hidden
                   />
-                  <div className="absolute inset-0 flex flex-col justify-end p-5 sm:p-6 md:items-start md:justify-center md:pl-10 md:pr-7 md:py-10 lg:pl-12 lg:pr-8 lg:py-11">
+                  <div className="absolute inset-0 flex max-md:min-h-0 flex-col justify-end p-5 max-md:pt-16 max-md:pb-5 sm:p-6 md:items-start md:justify-center md:pl-10 md:pr-7 md:py-10 lg:pl-12 lg:pr-8 lg:py-11">
                     <VisitorReveal
                       active={activeSlide === 1}
-                      className="w-full max-w-md md:pl-0"
+                      className="w-full min-h-0 max-w-md md:pl-0"
                     >
                       <div
                         className={`${VISITOR_PANEL_BASE} border-white/[0.15] bg-black/44 md:bg-black/40`}
@@ -361,7 +364,7 @@ export default function ZiyaretciSunumuPage() {
           ref={(el) => {
             slidesRef.current[2] = el;
           }}
-          className={`relative flex h-screen w-full shrink-0 snap-start flex-col overflow-hidden border-t border-white/[0.06] bg-black ${VISITOR_SLIDE_FOCUS} ${slideFocusOpacity(2)}`}
+          className={`relative flex h-screen min-h-[100svh] w-full shrink-0 snap-start flex-col overflow-hidden max-md:overflow-visible border-t border-white/[0.06] bg-black ${VISITOR_SLIDE_FOCUS} ${slideFocusOpacity(2)}`}
           aria-labelledby="cocuk-etkinlikleri-title"
         >
           <p className="pointer-events-none absolute left-[max(0.75rem,env(safe-area-inset-left))] top-[6.75rem] z-30 text-[9px] font-normal uppercase tabular-nums tracking-[0.1em] text-white/52 drop-shadow-md sm:left-8 sm:top-[5.75rem] sm:text-[10px] md:left-10 md:top-28 lg:left-12 lg:top-32 lg:text-xs">
@@ -372,7 +375,7 @@ export default function ZiyaretciSunumuPage() {
           <div className="flex min-h-0 flex-1 flex-col items-center justify-center px-4 pb-10 pt-7 sm:px-6 sm:pb-12 sm:pt-9 md:px-8 lg:px-12">
             <div className={`${SPONSOR_FRAME_OUTER} w-full`}>
               <div className="p-2 sm:p-4 md:p-5 lg:p-7">
-                <div className="relative aspect-[16/10] min-h-[17rem] w-full overflow-hidden rounded-lg sm:min-h-[20rem] sm:rounded-xl md:aspect-auto md:min-h-[min(72svh,44rem)]">
+                <div className={VISITOR_SLIDE_FRAME}>
                   <VisitorParallaxVisual active={activeSlide === 2}>
                     <Image
                       src="/images/kids-area.jpg"
@@ -386,10 +389,10 @@ export default function ZiyaretciSunumuPage() {
                     className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/28 via-transparent to-black/16 sm:bg-gradient-to-br sm:from-black/42 sm:via-black/14 sm:to-transparent"
                     aria-hidden
                   />
-                  <div className="absolute inset-0 flex flex-col justify-end p-5 sm:p-6 md:items-start md:justify-start md:pl-10 md:pr-7 md:pb-9 md:pt-12 lg:pl-12 lg:pr-8 lg:pb-10 lg:pt-14">
+                  <div className="absolute inset-0 flex max-md:min-h-0 flex-col justify-end p-5 max-md:pt-16 max-md:pb-5 sm:p-6 md:items-start md:justify-start md:pl-10 md:pr-7 md:pb-9 md:pt-12 lg:pl-12 lg:pr-8 lg:pb-10 lg:pt-14">
                     <VisitorReveal
                       active={activeSlide === 2}
-                      className="w-full max-w-md md:pl-0"
+                      className="w-full min-h-0 max-w-md md:pl-0"
                     >
                       <div
                         className={`${VISITOR_PANEL_BASE} border-white/[0.14] bg-black/46 md:bg-black/42`}
@@ -423,7 +426,7 @@ export default function ZiyaretciSunumuPage() {
           ref={(el) => {
             slidesRef.current[3] = el;
           }}
-          className={`relative flex h-screen w-full shrink-0 snap-start flex-col overflow-hidden border-t border-white/[0.06] bg-black ${VISITOR_SLIDE_FOCUS} ${slideFocusOpacity(3)}`}
+          className={`relative flex h-screen min-h-[100svh] w-full shrink-0 snap-start flex-col overflow-hidden max-md:overflow-visible border-t border-white/[0.06] bg-black ${VISITOR_SLIDE_FOCUS} ${slideFocusOpacity(3)}`}
           aria-labelledby="yetiskin-etkinlikleri-title"
         >
           <p className="pointer-events-none absolute left-[max(0.75rem,env(safe-area-inset-left))] top-[6.75rem] z-30 text-[9px] font-normal uppercase tabular-nums tracking-[0.1em] text-white/52 drop-shadow-md sm:left-8 sm:top-[5.75rem] sm:text-[10px] md:left-10 md:top-28 lg:left-12 lg:top-32 lg:text-xs">
@@ -434,7 +437,7 @@ export default function ZiyaretciSunumuPage() {
           <div className="flex min-h-0 flex-1 flex-col items-center justify-center px-4 pb-10 pt-7 sm:px-6 sm:pb-12 sm:pt-9 md:px-8 lg:px-12">
             <div className={`${SPONSOR_FRAME_OUTER} w-full`}>
               <div className="p-2 sm:p-4 md:p-5 lg:p-7">
-                <div className="relative aspect-[16/10] min-h-[17rem] w-full overflow-hidden rounded-lg sm:min-h-[20rem] sm:rounded-xl md:aspect-auto md:min-h-[min(72svh,44rem)]">
+                <div className={VISITOR_SLIDE_FRAME}>
                   <VisitorParallaxVisual active={activeSlide === 3}>
                     <Image
                       src="/images/adult-activities.jpg"
@@ -448,10 +451,10 @@ export default function ZiyaretciSunumuPage() {
                     className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/28 via-transparent to-black/16 sm:bg-gradient-to-bl sm:from-black/42 sm:via-black/14 sm:to-transparent"
                     aria-hidden
                   />
-                  <div className="absolute inset-0 flex flex-col justify-end p-5 sm:p-6 md:items-end md:justify-start md:pl-7 md:pr-10 md:pb-9 md:pt-12 lg:pl-8 lg:pr-12 lg:pb-10 lg:pt-12">
+                  <div className="absolute inset-0 flex max-md:min-h-0 flex-col justify-end p-5 max-md:pt-16 max-md:pb-5 sm:p-6 md:items-end md:justify-start md:pl-7 md:pr-10 md:pb-9 md:pt-12 lg:pl-8 lg:pr-12 lg:pb-10 lg:pt-12">
                     <VisitorReveal
                       active={activeSlide === 3}
-                      className="w-full max-w-md md:pr-0"
+                      className="w-full min-h-0 max-w-md md:pr-0"
                     >
                       <div
                         className={`${VISITOR_PANEL_BASE} border-white/[0.14] bg-black/46 md:bg-black/42`}
@@ -485,7 +488,7 @@ export default function ZiyaretciSunumuPage() {
           ref={(el) => {
             slidesRef.current[4] = el;
           }}
-          className={`relative flex h-screen w-full shrink-0 snap-start flex-col overflow-hidden border-t border-white/[0.06] bg-black ${VISITOR_SLIDE_FOCUS} ${slideFocusOpacity(4)}`}
+          className={`relative flex h-screen min-h-[100svh] w-full shrink-0 snap-start flex-col overflow-hidden max-md:overflow-visible border-t border-white/[0.06] bg-black ${VISITOR_SLIDE_FOCUS} ${slideFocusOpacity(4)}`}
           aria-labelledby="festival-alani-title"
         >
           <p className="pointer-events-none absolute left-[max(0.75rem,env(safe-area-inset-left))] top-[6.75rem] z-30 text-[9px] font-normal uppercase tabular-nums tracking-[0.1em] text-white/52 drop-shadow-md sm:left-8 sm:top-[5.75rem] sm:text-[10px] md:left-10 md:top-28 lg:left-12 lg:top-32 lg:text-xs">
@@ -496,7 +499,7 @@ export default function ZiyaretciSunumuPage() {
           <div className="flex min-h-0 flex-1 flex-col items-center justify-center px-4 pb-10 pt-7 sm:px-6 sm:pb-12 sm:pt-9 md:px-8 lg:px-12">
             <div className={`${SPONSOR_FRAME_OUTER} w-full`}>
               <div className="p-2 sm:p-4 md:p-5 lg:p-7">
-                <div className="relative aspect-[16/10] min-h-[17rem] w-full overflow-hidden rounded-lg sm:min-h-[20rem] sm:rounded-xl md:aspect-auto md:min-h-[min(72svh,44rem)]">
+                <div className={VISITOR_SLIDE_FRAME}>
                   <VisitorParallaxVisual active={activeSlide === 4}>
                     <Image
                       src="/images/festival-area.jpg"
@@ -510,10 +513,10 @@ export default function ZiyaretciSunumuPage() {
                     className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-black/18 sm:bg-gradient-to-r sm:from-black/40 sm:via-black/12 sm:to-transparent"
                     aria-hidden
                   />
-                  <div className="absolute inset-0 flex flex-col justify-end p-5 sm:p-6 md:items-start md:justify-center md:pl-10 md:pr-7 md:py-10 lg:pl-12 lg:pr-8 lg:py-11">
+                  <div className="absolute inset-0 flex max-md:min-h-0 flex-col justify-end p-5 max-md:pt-16 max-md:pb-5 sm:p-6 md:items-start md:justify-center md:pl-10 md:pr-7 md:py-10 lg:pl-12 lg:pr-8 lg:py-11">
                     <VisitorReveal
                       active={activeSlide === 4}
-                      className="w-full max-w-md md:pl-0"
+                      className="w-full min-h-0 max-w-md md:pl-0"
                     >
                       <div
                         className={`${VISITOR_PANEL_BASE} border-white/[0.14] bg-black/48 md:bg-black/44`}
@@ -547,7 +550,7 @@ export default function ZiyaretciSunumuPage() {
           ref={(el) => {
             slidesRef.current[5] = el;
           }}
-          className={`relative flex h-screen w-full shrink-0 snap-start flex-col overflow-hidden border-t border-white/[0.06] bg-black ${VISITOR_SLIDE_FOCUS} ${slideFocusOpacity(5)}`}
+          className={`relative flex h-screen min-h-[100svh] w-full shrink-0 snap-start flex-col overflow-hidden max-md:overflow-visible border-t border-white/[0.06] bg-black ${VISITOR_SLIDE_FOCUS} ${slideFocusOpacity(5)}`}
           aria-labelledby="kapanis-cta-title"
         >
           <p className="pointer-events-none absolute left-[max(0.75rem,env(safe-area-inset-left))] top-[6.75rem] z-30 text-[9px] font-normal uppercase tabular-nums tracking-[0.1em] text-white/52 drop-shadow-md sm:left-8 sm:top-[5.75rem] sm:text-[10px] md:left-10 md:top-28 lg:left-12 lg:top-32 lg:text-xs">
@@ -558,7 +561,7 @@ export default function ZiyaretciSunumuPage() {
           <div className="flex min-h-0 flex-1 flex-col items-center justify-center px-4 pb-10 pt-7 sm:px-6 sm:pb-12 sm:pt-9 md:px-8 lg:px-12">
             <div className={`${SPONSOR_FRAME_OUTER} w-full`}>
               <div className="p-2 sm:p-4 md:p-5 lg:p-7">
-                <div className="relative aspect-[16/10] min-h-[17rem] w-full overflow-hidden rounded-lg sm:min-h-[20rem] sm:rounded-xl md:aspect-auto md:min-h-[min(72svh,44rem)]">
+                <div className={VISITOR_SLIDE_FRAME}>
                   <VisitorParallaxVisual active={activeSlide === 5} emphasis>
                     <Image
                       src="/images/festival-cta.jpg"
@@ -572,7 +575,7 @@ export default function ZiyaretciSunumuPage() {
                     className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/14 via-transparent to-transparent sm:from-black/12"
                     aria-hidden
                   />
-                  <div className="absolute inset-0 flex items-end justify-center px-5 pb-12 sm:px-8 sm:pb-12 md:px-10 md:pb-14">
+                  <div className="absolute inset-0 flex items-end justify-center max-md:pt-16 max-md:pb-2 px-5 pb-12 sm:px-8 sm:pb-12 md:px-10 md:pb-14">
                     <VisitorReveal
                       active={activeSlide === 5}
                       emphasis
@@ -580,7 +583,7 @@ export default function ZiyaretciSunumuPage() {
                     >
                       <div
                         id="kapanis-cta-title"
-                        className="space-y-3.5 leading-[1.72] sm:space-y-4"
+                        className="max-md:px-2 max-md:pb-4 space-y-3.5 leading-[1.72] sm:space-y-4"
                         style={{
                           textShadow:
                             "0 1px 12px rgba(0,0,0,0.55), 0 2px 4px rgba(0,0,0,0.35)",
